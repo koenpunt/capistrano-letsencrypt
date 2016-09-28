@@ -1,4 +1,4 @@
-# Capistrano::LetsEncrypt [![Gem Version](https://badge.fury.io/rb/capistrano-lets-encrypt.png)](http://badge.fury.io/rb/capistrano-lets-encrypt)
+# Capistrano::LetsEncrypt [![Gem Version](https://badge.fury.io/rb/capistrano-letsencrypt.png)](http://badge.fury.io/rb/capistrano-letsencrypt)
 
 Let's encrypt support for Capistrano 3.x
 
@@ -13,8 +13,8 @@ deployed with capistrano
 
 Add this line to your application's Gemfile:
 
-    gem 'capistrano-lets-encrypt'
     gem 'capistrano'
+    gem 'capistrano-letsencrypt'
 
 And then execute:
 
@@ -22,23 +22,23 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install capistrano-lets-encrypt
+    $ gem install capistrano-letsencrypt
 
 ## Usage
 
 Require in `Capfile` to use the default task:
 
 ```ruby
-require 'capistrano/lets-encrypt'
+require 'capistrano/letsencrypt'
 ```
 
 You will get the following tasks
 
-```ruby
-cap lets_encrypt:register            # Register a Let's encrypt account
-cap lets_encrypt:check_certificate   # Check for validity of certificates
-cap lets_encrypt:authorize           # Authorize a domain using ACME protocol
-cap lets_encrypt:cert                # Create certificates and private keys
+```
+cap letsencrypt:register            # Register a Let's encrypt account
+cap letsencrypt:check_certificate   # Check for validity of certificates
+cap letsencrypt:authorize           # Authorize a domain using ACME protocol
+cap letsencrypt:cert                # Create certificates and private keys
 ```
 
 Configurable options (copy into deploy.rb), shown here with examples:
@@ -47,45 +47,45 @@ Configurable options (copy into deploy.rb), shown here with examples:
 # Set the roles where the let's encrypt process should be started
 # Be sure at least one server has primary: true
 # default value: :web
-set :lets_encrypt_roles, :lets_encrypt
+set :letsencrypt_roles, :letsencrypt
 
 # Optionally set the user to use when installing on the remote system
 # default value: nil
-set :lets_encrypt_user, nil
+set :letsencrypt_user, nil
 
 # Set it to true to use let's encrypt staging servers
 # default value: false
-set :lets_encrypt_test, true
+set :letsencrypt_test, true
 
 # Set your let's encrypt account email (required)
 # The account will be created if no private key match
 # default value: nil
-set :lets_encrypt_email, nil
+set :letsencrypt_email, nil
 
 # Set the path to your let's encrypt account private key
-# default value: "#{fetch(:lets_encrypt_email)}.account_key.pem"
-set :lets_encrypt_account_key, "#{fetch(:lets_encrypt_email)}.account_key.pem"
+# default value: "#{fetch(:letsencrypt_email)}.account_key.pem"
+set :letsencrypt_account_key, "#{fetch(:letsencrypt_email)}.account_key.pem"
 
 # Set the domains you want to register (required)
 # This must be a string of one or more domains separated a space - e.g. "example.com example2.com"
 # default value: nil
-set :lets_encrypt_domains, nil
+set :letsencrypt_domains, nil
 
 # Set the path from where you are serving your static assets
 # default value: "#{release_path}/public"
-set :lets_encrypt_challenge_public_path, "#{release_path}/public"
+set :letsencrypt_challenge_public_path, "#{release_path}/public"
 
 # Set the path where the new certs are going to be saved
 # default value: "#{shared_path}/ssl/certs"
-set :lets_encrypt_output_path, "#{shared_path}/ssl/certs"
+set :letsencrypt_output_path, "#{shared_path}/ssl/certs"
 
 # Set the local path where the certs will be saved
 # default value: "~/certs"
-set :lets_encrypt_local_output_path, "~/certs"
+set :letsencrypt_local_output_path, "~/certs"
 
 # Set the minimum time that the cert should be valid
 # default value: 30
-set :lets_encrypt_days_valid, 15
+set :letsencrypt_days_valid, 15
 ```
 
 ## Requirements
@@ -102,11 +102,11 @@ This tool needs Ruby >= 2.1 (as the dependency acme-client needs that because of
 
 ## Credits
 
-Thank you [contributors](https://github.com/platanus/capistrano-lets-encrypt/graphs/contributors)!
+Thank you [contributors](https://github.com/platanus/capistrano-letsencrypt/graphs/contributors)!
 
 <img src="http://platan.us/gravatar_with_text.png" alt="Platanus" width="250"/>
 
-capistrano-lets-encrypt is maintained by [platanus](http://platan.us).
+capistrano-letsencrypt is maintained by [platanus](http://platan.us).
 
 ## License
 

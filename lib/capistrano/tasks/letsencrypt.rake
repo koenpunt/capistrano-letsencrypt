@@ -2,11 +2,11 @@ require 'openssl'
 require 'letsencrypt/cli/acme_wrapper'
 require 'colorize'
 
-namespace :lets_encrypt do
+namespace :letsencrypt do
 
   desc 'Register Let\' Encrypt account with email'
   task :register do
-    email = fetch(:lets_encrypt_email)
+    email = fetch(:letsencrypt_email)
     if email.nil? || email == ""
       wrapper.log "no E-Mail specified!", :fatal
       exit 1
@@ -22,14 +22,14 @@ namespace :lets_encrypt do
 
   desc 'Check if the certificate are valid'
   task :check_certificate do
-    on roles(fetch(:lets_encrypt_roles)) do
+    on roles(fetch(:letsencrypt_roles)) do
       check_certificate
     end
   end
 
   desc 'Authorize the domain using the ACME challenge'
   task :authorize do
-    on roles(fetch(:lets_encrypt_roles), select: :primary) do
+    on roles(fetch(:letsencrypt_roles), select: :primary) do
       unless check_certificate
         domains.each do |domain|
           authorize(domain)
@@ -41,7 +41,7 @@ namespace :lets_encrypt do
   desc "create certificate and private key pair for domains. The first domain is the main CN domain"
   task :cert do
     cert(domains)
-    on roles(fetch(:lets_encrypt_roles)) do
+    on roles(fetch(:letsencrypt_roles)) do
       domains.each do |domain|
         upload_certs domain
       end
@@ -67,7 +67,7 @@ namespace :lets_encrypt do
       authorization = client.authorize(domain: domain)
 
       challenge = authorization.http01
-      challenge_public_path = fetch(:lets_encrypt_challenge_public_path)
+      challenge_public_path = fetch(:letsencrypt_challenge_public_path)
       challenge_path = File.join(challenge_public_path, File.dirname(challenge.filename))
       challenge_file_path = File.join(challenge_public_path, challenge.filename)
       execute :mkdir, '-pv', challenge_path
@@ -104,7 +104,7 @@ namespace :lets_encrypt do
 
   def upload_certs(domain)
     as_encrypt_user do
-      execute :mkdir, '-pv', "#{fetch(:lets_encrypt_output_path)}/#{domain}"
+      execute :mkdir, '-pv', "#{fetch(:letsencrypt_output_path)}/#{domain}"
       safe_upload! local_private_key_path, private_key_path
       safe_upload! local_fullchain_path, fullchain_path
       safe_upload! local_certificate_path, certificate_path
@@ -113,8 +113,8 @@ namespace :lets_encrypt do
   end
 
   def as_encrypt_user(&block)
-    if fetch(:lets_encrypt_user)
-      as fetch(:lets_encrypt_user) do
+    if fetch(:letsencrypt_user)
+      as fetch(:letsencrypt_user) do
         yield
       end
     else
@@ -130,19 +130,19 @@ namespace :lets_encrypt do
 
   # Helpers
   def certificate_path(domain = primary_domain)
-    File.join(fetch(:lets_encrypt_output_path), domain, "cert.pem")
+    File.join(fetch(:letsencrypt_output_path), domain, "cert.pem")
   end
 
   def chain_path(domain = primary_domain)
-    File.join(fetch(:lets_encrypt_output_path), domain, "chain.pem")
+    File.join(fetch(:letsencrypt_output_path), domain, "chain.pem")
   end
 
   def fullchain_path(domain = primary_domain)
-    File.join(fetch(:lets_encrypt_output_path), domain, "fullchain.pem")
+    File.join(fetch(:letsencrypt_output_path), domain, "fullchain.pem")
   end
 
   def private_key_path(domain = primary_domain)
-    File.join(fetch(:lets_encrypt_output_path), domain, "key.pem")
+    File.join(fetch(:letsencrypt_output_path), domain, "key.pem")
   end
 
   def local_certificate_path(domain = primary_domain)
@@ -162,11 +162,11 @@ namespace :lets_encrypt do
   end
 
   def local_out_path(domain = primary_domain)
-    File.join(File.expand_path(fetch(:lets_encrypt_local_output_path)), domain)
+    File.join(File.expand_path(fetch(:letsencrypt_local_output_path)), domain)
   end
 
   def domains
-    fetch(:lets_encrypt_domains).split(" ")
+    fetch(:letsencrypt_domains).split(" ")
   end
 
   def primary_domain
@@ -179,11 +179,11 @@ namespace :lets_encrypt do
 
   def options
     @options ||= {
-      account_key: File.expand_path(fetch(:lets_encrypt_account_key)),
-      test: fetch(:lets_encrypt_test),
+      account_key: File.expand_path(fetch(:letsencrypt_account_key)),
+      test: fetch(:letsencrypt_test),
       log_level: "info",
       color: true,
-      days_valid: fetch(:lets_encrypt_days_valid),
+      days_valid: fetch(:letsencrypt_days_valid),
       private_key_path: local_private_key_path,
       fullchain_path: local_fullchain_path,
       certificate_path: local_certificate_path,
@@ -198,14 +198,14 @@ end
 
 namespace :load do
   task :defaults do
-    set :lets_encrypt_roles,                 -> { :web }
-    set :lets_encrypt_test,                  -> { false }
-    set :lets_encrypt_email,                 -> { nil }
-    set :lets_encrypt_domains,               -> { nil }
-    set :lets_encrypt_challenge_public_path, -> { "#{release_path}/public" }
-    set :lets_encrypt_output_path,           -> { "#{shared_path}/ssl/certs" }
-    set :lets_encrypt_account_key,           -> { "#{fetch(:lets_encrypt_email)}.account_key.pem" }
-    set :lets_encrypt_days_valid,            -> { 30 }
-    set :lets_encrypt_local_output_path,     -> { "~/certs" }
+    set :letsencrypt_roles,                 -> { :web }
+    set :letsencrypt_test,                  -> { false }
+    set :letsencrypt_email,                 -> { nil }
+    set :letsencrypt_domains,               -> { nil }
+    set :letsencrypt_challenge_public_path, -> { "#{release_path}/public" }
+    set :letsencrypt_output_path,           -> { "#{shared_path}/ssl/certs" }
+    set :letsencrypt_account_key,           -> { "#{fetch(:letsencrypt_email)}.account_key.pem" }
+    set :letsencrypt_days_valid,            -> { 30 }
+    set :letsencrypt_local_output_path,     -> { "~/certs" }
   end
 end

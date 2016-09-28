@@ -3,7 +3,7 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  spec.name          = "capistrano-lets-encrypt"
+  spec.name          = "capistrano-letsencrypt"
   spec.version       = "0.2.0"
   spec.authors       = ["Juan Ignacio Donoso"]
   spec.email         = ["juan.ignacio@platan.us"]
